@@ -29,9 +29,6 @@
  * @version 1.0
  */
 $gsm_path = $modx->getOption('core_path').'components/googlesitemap/';
-if (!function_exists('datediff')) {
-    include_once $core_path.'datediff.function.php';
-}
 if (!class_exists('GoogleSiteMap')) {
     $modx->addPackage('googlesitemap',$gsm_path.'model/');
     $modx->loadClass('googlesitemap.GoogleSiteMap',$gsm_path.'model/',true,true);

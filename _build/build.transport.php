@@ -60,41 +60,6 @@ $builder = new modPackageBuilder($modx);
 $builder->createPackage('googlesitemap','1.0','beta1');
 $builder->registerNamespace('googlesitemap',false,true,'{core_path}components/googlesitemap/');
 
-/* load action/menu */
-$action = include $sources['data'].'transport.action.php';
-
-$vehicle= $builder->createVehicle($action,array (
-    XPDO_TRANSPORT_PRESERVE_KEYS => false,
-    XPDO_TRANSPORT_UPDATE_OBJECT => true,
-    XPDO_TRANSPORT_UNIQUE_KEY => array ('namespace','controller'),
-    XPDO_TRANSPORT_RELATED_OBJECTS => true,
-    XPDO_TRANSPORT_RELATED_OBJECT_ATTRIBUTES => array (
-        'Menus' => array (
-            XPDO_TRANSPORT_PRESERVE_KEYS => false,
-            XPDO_TRANSPORT_UPDATE_OBJECT => true,
-            XPDO_TRANSPORT_UNIQUE_KEY => array ('action', 'text'),
-        ),
-    ),
-));
-$builder->putVehicle($vehicle);
-unset($vehicle,$action);
-
-/* load system settings */
-$settings = array();
-include_once $sources['data'].'transport.settings.php';
-
-$attributes= array(
-    XPDO_TRANSPORT_UNIQUE_KEY => 'key',
-    XPDO_TRANSPORT_PRESERVE_KEYS => true,
-    XPDO_TRANSPORT_UPDATE_OBJECT => false,
-);
-foreach ($settings as $setting) {
-    $vehicle = $builder->createVehicle($setting,$attributes);
-    $builder->putVehicle($vehicle);
-}
-unset($settings,$setting,$attributes);
-
-
 /* create category */
 $category= $modx->newObject('modCategory');
 $category->set('id',1);
@@ -131,14 +96,7 @@ $vehicle->resolve('file',array(
     'source' => $sources['source_core'],
     'target' => "return MODX_CORE_PATH . 'components/';",
 ));
-$vehicle->resolve('file',array(
-    'source' => $sources['source_assets'],
-    'target' => "return MODX_ASSETS_PATH . 'components/';",
-));
 $builder->putVehicle($vehicle);
-
-/* load lexicon strings */
-$builder->buildLexicon($sources['lexicon']);
 
 /* now pack in the license file, readme and setup options */
 $builder->setPackageAttributes(array(
