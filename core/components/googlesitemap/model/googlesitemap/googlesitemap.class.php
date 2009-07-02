@@ -104,11 +104,13 @@ class GoogleSiteMap {
         $c->groupby('modResource.id');
         $children = $this->modx->getCollection('modResource',$c);
 
-        foreach($children as $child) {
+        foreach ($children as $child) {
             $id = $child->get('id');
             if ($selfId == $id) continue;
 
-            $url = $this->modx->getOption('site_url').$this->modx->makeUrl($id);
+            $url = $this->modx->makeUrl($id);
+            $url = $this->modx->getOption('site_url').ltrim($url,'/');
+
             $date = $child->get('editedon');
             $date = date("Y-m-d", strtotime($date));
             /* Get the date difference */
