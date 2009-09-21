@@ -94,7 +94,7 @@ class GoogleSiteMap {
             array_walk($atpls,'quoteArrayItem');
             $tpls = implode(',',$atpls);
 
-            $c->innerJoin('modTemplate','modTemplate');
+            $c->innerJoin('modTemplate','Template');
             $c->where(array(
                 'modTemplate.'.$this->config['templateFilter'].' IN ('.$tpls.')',
             ));

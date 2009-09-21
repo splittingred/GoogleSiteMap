@@ -57,7 +57,7 @@ $modx->setLogTarget(XPDO_CLI_MODE ? 'ECHO' : 'HTML');
 
 $modx->loadClass('transport.modPackageBuilder','',false, true);
 $builder = new modPackageBuilder($modx);
-$builder->createPackage('googlesitemap','1.0','beta2');
+$builder->createPackage('googlesitemap','1.0','beta3');
 $builder->registerNamespace('googlesitemap',false,true,'{core_path}components/googlesitemap/');
 
 /* create category */
@@ -84,7 +84,7 @@ $attr = array(
     XPDO_TRANSPORT_UPDATE_OBJECT => true,
     XPDO_TRANSPORT_RELATED_OBJECTS => true,
     XPDO_TRANSPORT_RELATED_OBJECT_ATTRIBUTES => array (
-        'modSnippet' => array(
+        'Snippets' => array(
             XPDO_TRANSPORT_PRESERVE_KEYS => false,
             XPDO_TRANSPORT_UPDATE_OBJECT => true,
             XPDO_TRANSPORT_UNIQUE_KEY => 'name',
