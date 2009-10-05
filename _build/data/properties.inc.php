@@ -33,6 +33,13 @@ $properties = array(
         'value' => '',
     ),
     array(
+        'name' => 'context',
+        'desc' => 'Limit to the specified Context. If empty, will grab Resources from current Context. Defaults to empty.',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => '',
+    ),
+    array(
         'name' => 'hideDeleted',
         'desc' => 'If true, will show only nondeleted Resources.',
         'type' => 'combo-boolean',

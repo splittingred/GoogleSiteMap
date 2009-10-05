@@ -36,6 +36,7 @@ class GoogleSiteMap {
         $this->modx =& $modx;
         $this->config = array_merge(array(
             'allowedtemplates' => '',
+            'context' => '',
             'googleSchema' => 'http://www.google.com/schemas/sitemap/0.84',
             'hideDeleted' => true,
             'published' => true,
@@ -79,6 +80,11 @@ class GoogleSiteMap {
         $c->where(array(
             'parent' => $currentParent,
         ));
+        if (!empty($this->config['context'])) {
+            $c->where(array('context_key' => $this->config['context']));
+        } else {
+            $c->where(array('context_key' => $this->modx->context->get('key')));
+        }
         if ($this->config['published']) {
             $c->where(array('published' => true));
         }
@@ -96,7 +102,7 @@ class GoogleSiteMap {
 
             $c->innerJoin('modTemplate','Template');
             $c->where(array(
-                'modTemplate.'.$this->config['templateFilter'].' IN ('.$tpls.')',
+                'Template.'.$this->config['templateFilter'].' IN ('.$tpls.')',
             ));
         }
 
@@ -140,10 +146,9 @@ class GoogleSiteMap {
         }
         return $output;
     }
-
-
-
 }
+
+
 
 if (!function_exists('quoteArrayItem')) {
     function quoteArrayItem(&$v) { $v = '"'.$v.'"'; }
