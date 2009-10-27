@@ -25,14 +25,10 @@
  * @package googlesitemap
  */
 class GoogleSiteMap {
-    /**#@+
+    /**
      * Creates an instance of the GoogleSiteMap class.
      */
-    function GoogleSiteMap(&$modx,$config = array()) {
-        $this->__construct($modx,$config);
-    }
-    /** @ignore */
-    function __construct(&$modx,$config = array()) {
+    function __construct(modX &$modx,array $config = array()) {
         $this->modx =& $modx;
         $this->config = array_merge(array(
             'allowedtemplates' => '',
@@ -47,7 +43,6 @@ class GoogleSiteMap {
             'templateFilter' => 'id',
         ),$config);
     }
-    /**#@-*/
 
     /**
      * Runs the sitemap generation.
@@ -55,7 +50,7 @@ class GoogleSiteMap {
      * @access public
      * @return string The XML google output
      */
-    function generate() {
+    public function generate() {
         $xml = "<urlset xmlns=\"".$this->config['googleSchema']."\">\n";
         $xml .= $this->_run(0);
         $xml .= "</urlset>";
@@ -71,7 +66,7 @@ class GoogleSiteMap {
      * @param integer $selfId If specified, will exclude this ID
      * @return string The generated XML
      */
-    function _run($currentParent = 0,$selfId = -1) {
+    private function _run($currentParent = 0,$selfId = -1) {
         $output = '';
 
         $c = $this->modx->newQuery('modResource');
