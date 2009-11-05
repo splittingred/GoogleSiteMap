@@ -57,7 +57,7 @@ $modx->setLogTarget(XPDO_CLI_MODE ? 'ECHO' : 'HTML');
 
 $modx->loadClass('transport.modPackageBuilder','',false, true);
 $builder = new modPackageBuilder($modx);
-$builder->createPackage('googlesitemap','1.0','rc2');
+$builder->createPackage('googlesitemap','1.1','beta1');
 $builder->registerNamespace('googlesitemap',false,true,'{core_path}components/googlesitemap/');
 
 /* create category */
