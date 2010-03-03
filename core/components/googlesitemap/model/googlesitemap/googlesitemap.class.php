@@ -112,7 +112,7 @@ class GoogleSiteMap {
             $url = $this->modx->makeUrl($id);
             $url = $this->modx->getOption('site_url').ltrim($url,'/');
 
-            $date = $child->get('editedon');
+            $date = $child->get('editedon') ? $child->get('editedon') : $child->get('createdon');
             $date = date("Y-m-d", strtotime($date));
             /* Get the date difference */
             $datediff = datediff("d", $date, date("Y-m-d"));

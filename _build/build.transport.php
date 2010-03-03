@@ -33,6 +33,11 @@ $mtime = $mtime[1] + $mtime[0];
 $tstart = $mtime;
 set_time_limit(0);
 
+define('PKG_NAME','GoogleSiteMap');
+define('PKG_NAME_LOWER',strtolower(PKG_NAME));
+define('PKG_VERSION','1.1');
+define('PKG_RELEASE','beta2');
+
 $root = dirname(dirname(__FILE__)).'/';
 $sources= array (
     'root' => $root,
@@ -57,13 +62,13 @@ $modx->setLogTarget(XPDO_CLI_MODE ? 'ECHO' : 'HTML');
 
 $modx->loadClass('transport.modPackageBuilder','',false, true);
 $builder = new modPackageBuilder($modx);
-$builder->createPackage('googlesitemap','1.1','beta1');
-$builder->registerNamespace('googlesitemap',false,true,'{core_path}components/googlesitemap/');
+$builder->createPackage(PKG_NAME_LOWER,PKG_VERSION,PKG_RELEASE);
+$builder->registerNamespace(PKG_NAME_LOWER,false,true,'{core_path}components/'.PKG_NAME_LOWER.'/');
 
 /* create category */
 $category= $modx->newObject('modCategory');
 $category->set('id',1);
-$category->set('category','GoogleSiteMap');
+$category->set('category',PKG_NAME);
 
 
 /* create the snippet */

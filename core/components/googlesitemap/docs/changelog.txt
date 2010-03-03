@@ -1,0 +1,6 @@
+Changelog for GoogleSiteMap.
+
+GoogleSiteMap 1.0 ($LastChangedRevision$, $LastChangedDate$)
+====================================
+- Added fix for when editedon is empty (thanks Andrey Federov!) 
+- Added changelog
