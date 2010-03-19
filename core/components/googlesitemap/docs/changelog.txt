@@ -2,5 +2,6 @@ Changelog for GoogleSiteMap.
 
 GoogleSiteMap 1.0 ($LastChangedRevision$, $LastChangedDate$)
 ====================================
+- Updated package build for Revo RC1
 - Added fix for when editedon is empty (thanks Andrey Federov!) 
 - Added changelog
