@@ -2,7 +2,7 @@
 /**
  * GoogleSiteMap
  *
- * Copyright 2009 by Shaun McCormick <shaun@collabpad.com>
+ * Copyright 2009-2010 by Shaun McCormick <shaun@modx.com>
  *
  * - Based on Michal Till's MODx Evolution GoogleSiteMap_XML snippet
  *
@@ -27,73 +27,87 @@
 $properties = array(
     array(
         'name' => 'allowedtemplates',
-        'desc' => 'A comma-separated list of Template IDs to filter by. Will only filter if a value is set.',
+        'desc' => 'prop_gsm.allowedtemplates_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
     ),
     array(
         'name' => 'context',
-        'desc' => 'Limit to the specified Context. If empty, will grab Resources from current Context. Defaults to empty.',
+        'desc' => 'prop_gsm.context_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
     ),
     array(
         'name' => 'hideDeleted',
-        'desc' => 'If true, will show only nondeleted Resources.',
+        'desc' => 'prop_gsm.hidedeleted_desc',
         'type' => 'combo-boolean',
         'options' => '',
         'value' => true,
     ),
     array(
         'name' => 'googleSchema',
-        'desc' => 'The location of the GoogleSiteMap schema.',
+        'desc' => 'prop_gsm.googleschema_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'http://www.google.com/schemas/sitemap/0.84',
     ),
     array(
         'name' => 'published',
-        'desc' => 'If true, will only show published resources.',
+        'desc' => 'prop_gsm.published_desc',
         'type' => 'combo-boolean',
         'options' => '',
         'value' => true,
     ),
     array(
         'name' => 'searchable',
-        'desc' => 'If true, will only show searchable resources.',
+        'desc' => 'prop_gsm.searchable_desc',
         'type' => 'combo-boolean',
         'options' => '',
         'value' => true,
     ),
     array(
         'name' => 'sortBy',
-        'desc' => 'The field to sort the results by.',
+        'desc' => 'prop_gsm.sortby_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'menuindex',
     ),
     array(
         'name' => 'sortByAlias',
-        'desc' => 'The class to use as the alias for the sortBy property.',
+        'desc' => 'prop_gsm.sortbyalias_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'modResource',
     ),
     array(
         'name' => 'sortDir',
-        'desc' => 'The direction to sort in.',
+        'desc' => 'prop_gsm.sortdir_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'ASC',
     ),
     array(
         'name' => 'templateFilter',
-        'desc' => 'The modTemplate column to filter by.',
+        'desc' => 'prop_gsm.templatefilter_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => 'id',
+    ),
+    array(
+        'name' => 'itemTpl',
+        'desc' => 'prop_gsm.itemtpl_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => 'gItem',
+    ),
+    array(
+        'name' => 'containerTpl',
+        'desc' => 'prop_gsm.containertpl_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => 'gContainer',
     ),
 );
 return $properties;

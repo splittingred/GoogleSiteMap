@@ -1,6 +1,13 @@
 Changelog for GoogleSiteMap.
 
-GoogleSiteMap 1.0 ($LastChangedRevision$, $LastChangedDate$)
+GoogleSiteMap 1.1
+====================================
+- Refactored to work with overridable chunks for templates
+- Fixed URL generation bug where home URL was incorrectly generating
+- Updated copyright information
+- i18n of properties
+
+GoogleSiteMap 1.0
 ====================================
 - Updated package build for Revo RC1
 - Added fix for when editedon is empty (thanks Andrey Federov!) 

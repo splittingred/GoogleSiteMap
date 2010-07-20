@@ -2,7 +2,7 @@
 /**
  * GoogleSiteMap
  *
- * Copyright 2009 by Shaun McCormick <shaun@collabpad.com>
+ * Copyright 2009-2010 by Shaun McCormick <shaun@modx.com>
  *
  * - Based on Michal Till's MODx Evolution GoogleSiteMap_XML snippet
  *
@@ -30,6 +30,8 @@ class GoogleSiteMap {
      */
     function __construct(modX &$modx,array $config = array()) {
         $this->modx =& $modx;
+
+        $corePath = $this->modx->getOption('googlesitemap.core_path',null,$this->modx->getOption('core_path').'components/googlesitemap/');
         $this->config = array_merge(array(
             'allowedtemplates' => '',
             'context' => '',
@@ -41,20 +43,10 @@ class GoogleSiteMap {
             'sortByAlias' => 'modResource',
             'sortDir' => 'ASC',
             'templateFilter' => 'id',
+            'itemSeparator' => "\n",
+            'itemTpl' => 'gItem',
+            'chunksPath' => $corePath.'elements/chunks/',
         ),$config);
-    }
-
-    /**
-     * Runs the sitemap generation.
-     *
-     * @access public
-     * @return string The XML google output
-     */
-    public function generate() {
-        $xml = "<urlset xmlns=\"".$this->config['googleSchema']."\">\n";
-        $xml .= $this->_run(0);
-        $xml .= "</urlset>";
-        return $xml;
     }
 
     /**
@@ -66,54 +58,59 @@ class GoogleSiteMap {
      * @param integer $selfId If specified, will exclude this ID
      * @return string The generated XML
      */
-    private function _run($currentParent = 0,$selfId = -1) {
+    public function run($currentParent = 0,$selfId = -1) {
         $output = '';
 
+        /* build query */
         $c = $this->modx->newQuery('modResource');
         $c->leftJoin('modResource','Children');
-        $c->select('modResource.*, COUNT(Children.id) AS children');
+        $c->select('
+            `modResource`.*,
+            COUNT(`Children`.`id`) AS `children`
+        ');
         $c->where(array(
             'parent' => $currentParent,
         ));
+
+        /* if restricting to contexts */
         if (!empty($this->config['context'])) {
-            $c->where(array('context_key' => $this->config['context']));
+            $ctxs = $this->prepareForIn($this->config['context']);
+            $c->where('`modResource`.`context_key` IN ('.$ctxs.')');
         } else {
-            $c->where(array('context_key' => $this->modx->context->get('key')));
-        }
-        if ($this->config['published']) {
-            $c->where(array('published' => true));
-        }
-        if ($this->config['hideDeleted']) {
-            $c->where(array('deleted' => false));
-        }
-        if ($this->config['searchable']) {
-            $c->where(array('searchable' => true));
+            $c->where(array('modResource.context_key' => $this->modx->context->get('key')));
         }
 
+        /* common flags */
+        if ($this->config['published']) { $c->where(array('published' => true)); }
+        if ($this->config['hideDeleted']) { $c->where(array('deleted' => false)); }
+        if ($this->config['searchable']) { $c->where(array('searchable' => true)); }
+
+        /* if restricting to templates */
         if (!empty($this->config['allowedtemplates'])) {
-            $atpls = split(',',$this->config['allowedtemplates']);
-            array_walk($atpls,'quoteArrayItem');
-            $tpls = implode(',',$atpls);
-
+            $tpls = $this->prepareForIn($this->config['allowedtemplates']);
             $c->innerJoin('modTemplate','Template');
             $c->where(array(
                 'Template.'.$this->config['templateFilter'].' IN ('.$tpls.')',
             ));
         }
 
+        /* sorting/grouping */
         $c->sortby($this->config['sortBy'],$this->config['sortDir']);
         $c->groupby('modResource.id');
+
+        /* get children */
         $children = $this->modx->getCollection('modResource',$c);
 
+        /* iterate */
         foreach ($children as $child) {
             $id = $child->get('id');
             if ($selfId == $id) continue;
 
-            $url = $this->modx->makeUrl($id);
-            $url = $this->modx->getOption('site_url').ltrim($url,'/');
+            $url = $this->modx->makeUrl($id,'','','full');
 
             $date = $child->get('editedon') ? $child->get('editedon') : $child->get('createdon');
             $date = date("Y-m-d", strtotime($date));
+            
             /* Get the date difference */
             $datediff = datediff("d", $date, date("Y-m-d"));
             if ($datediff <=1) {
@@ -129,17 +126,82 @@ class GoogleSiteMap {
                 $priority = '0.25';
                 $update = 'monthly';
             }
-            $output .= "<url>\n";
-            $output .= "<loc>$url</loc>\n";
-            $output .= "<lastmod>$date</lastmod>\n";
-            $output .= "<changefreq>$update</changefreq>\n";
-            $output .= "<priority>$priority</priority>\n";
-            $output .= "</url>\n";
+
+            /* add item to output */
+            $output .= $this->getChunk($this->config['itemTpl'],array(
+                'url' => $url,
+                'date' => $date,
+                'update' => $update,
+                'priority' => $priority,
+            )).$this->config['itemSeparator'];
+
+            /* if children, recurse */
             if ($child->get('children') > 0) {
-                $output .= $this->_run($child->get('id'),$selfId);
+                $output .= $this->run($child->get('id'),$selfId);
             }
         }
         return $output;
+    }
+
+    /**
+     * Prepares a comma-separated list for an IN statement
+     */
+    protected function prepareForIn($str,$delimiter = ',') {
+        $cslArray = explode($delimiter,$str);
+        $cslArray = array_unique($cslArray);
+        $results = array();
+        foreach ($cslArray as $item) {
+            $results[] = '"'.$item.'"';
+        }
+        return implode($delimiter,$results);
+    }
+
+
+    /**
+     * Gets a Chunk and caches it; also falls back to file-based templates
+     * for easier debugging.
+     *
+     * @access public
+     * @param string $name The name of the Chunk
+     * @param array $properties The properties for the Chunk
+     * @return string The processed content of the Chunk
+     */
+    public function getChunk($name,$properties = array()) {
+        $chunk = null;
+        if (!isset($this->chunks[$name])) {
+            $chunk = $this->_getTplChunk($name);
+            if (empty($chunk)) {
+                $chunk = $this->modx->getObject('modChunk',array('name' => $name),true);
+                if ($chunk == false) return false;
+            }
+            $this->chunks[$name] = $chunk->getContent();
+        } else {
+            $o = $this->chunks[$name];
+            $chunk = $this->modx->newObject('modChunk');
+            $chunk->setContent($o);
+        }
+        $chunk->setCacheable(false);
+        return $chunk->process($properties);
+    }
+
+    /**
+     * Returns a modChunk object from a template file.
+     *
+     * @access private
+     * @param string $name The name of the Chunk. Will parse to name.chunk.tpl
+     * @return modChunk/boolean Returns the modChunk object if found, otherwise
+     * false.
+     */
+    private function _getTplChunk($name) {
+        $chunk = false;
+        $f = $this->config['chunksPath'].strtolower($name).'.chunk.tpl';
+        if (file_exists($f)) {
+            $o = file_get_contents($f);
+            $chunk = $this->modx->newObject('modChunk');
+            $chunk->set('name',$name);
+            $chunk->setContent($o);
+        }
+        return $chunk;
     }
 }
 

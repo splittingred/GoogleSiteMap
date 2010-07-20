@@ -2,7 +2,7 @@
 /**
  * GoogleSiteMap
  *
- * Copyright 2009 by Shaun McCormick <shaun@collabpad.com>
+ * Copyright 2009-2010 by Shaun McCormick <shaun@modx.com>
  *
  * - Based on Michal Till's MODx Evolution GoogleSiteMap_XML snippet
  *
@@ -36,7 +36,7 @@ set_time_limit(0);
 define('PKG_NAME','GoogleSiteMap');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
 define('PKG_VERSION','1.1');
-define('PKG_RELEASE','rc1');
+define('PKG_RELEASE','pl');
 
 $root = dirname(dirname(__FILE__)).'/';
 $sources= array (
@@ -76,7 +76,7 @@ $snippet= $modx->newObject('modSnippet');
 $snippet->set('id',0);
 $snippet->set('name', 'GoogleSiteMap');
 $snippet->set('description', 'Builds the Google SiteMap XML.');
-$snippet->set('snippet',file_get_contents($sources['source_core'].'/googlesitemap.snippet.php'));
+$snippet->set('snippet',file_get_contents($sources['source_core'].'/elements/snippets/googlesitemap.snippet.php'));
 
 $properties = include $sources['data'].'properties.inc.php';
 $snippet->setProperties($properties);
