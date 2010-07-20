@@ -2,6 +2,7 @@ Changelog for GoogleSiteMap.
 
 GoogleSiteMap 1.1
 ====================================
+- Added maxDepth, excludeResources properties
 - Refactored to work with overridable chunks for templates
 - Fixed URL generation bug where home URL was incorrectly generating
 - Updated copyright information

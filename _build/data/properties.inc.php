@@ -40,6 +40,13 @@ $properties = array(
         'value' => '',
     ),
     array(
+        'name' => 'maxDepth',
+        'desc' => 'prop_gsm.maxdepth_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => 0,
+    ),
+    array(
         'name' => 'hideDeleted',
         'desc' => 'prop_gsm.hidedeleted_desc',
         'type' => 'combo-boolean',
@@ -66,6 +73,13 @@ $properties = array(
         'type' => 'combo-boolean',
         'options' => '',
         'value' => true,
+    ),
+    array(
+        'name' => 'excludeResources',
+        'desc' => 'prop_gsm.excluderesources_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => '',
     ),
     array(
         'name' => 'sortBy',

@@ -46,6 +46,8 @@ class GoogleSiteMap {
             'itemSeparator' => "\n",
             'itemTpl' => 'gItem',
             'chunksPath' => $corePath.'elements/chunks/',
+            'maxDepth' => 0,
+            'excludeResources' => '',
         ),$config);
     }
 
@@ -58,7 +60,8 @@ class GoogleSiteMap {
      * @param integer $selfId If specified, will exclude this ID
      * @return string The generated XML
      */
-    public function run($currentParent = 0,$selfId = -1) {
+    public function run($currentParent = 0,$selfId = -1,$depth = 0) {
+        if (!empty($this->config['maxDepth']) && $depth >= $this->config['maxDepth']) return '';
         $output = '';
 
         /* build query */
@@ -78,6 +81,13 @@ class GoogleSiteMap {
             $c->where('`modResource`.`context_key` IN ('.$ctxs.')');
         } else {
             $c->where(array('modResource.context_key' => $this->modx->context->get('key')));
+        }
+
+        if (!empty($this->config['excludeResources'])) {
+            $ex = $this->prepareForIn($this->config['excludeResources']);
+            $c->where(array(
+                '`modResource`.`id` NOT IN ('.$ex.')',
+            ));
         }
 
         /* common flags */
@@ -137,7 +147,7 @@ class GoogleSiteMap {
 
             /* if children, recurse */
             if ($child->get('children') > 0) {
-                $output .= $this->run($child->get('id'),$selfId);
+                $output .= $this->run($child->get('id'),$selfId,$depth+1);
             }
         }
         return $output;

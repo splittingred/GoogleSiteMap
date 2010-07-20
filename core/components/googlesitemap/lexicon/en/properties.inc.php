@@ -30,6 +30,8 @@
  */
 $_lang['prop_gsm.allowedtemplates_desc'] = 'A comma-separated list of Template IDs to filter by. Will only filter if a value is set.';
 $_lang['prop_gsm.context_desc'] = 'Limit to the specified Context(s). If empty, will grab Resources from current Context. Defaults to empty, can support a comma-separated list.';
+$_lang['prop_gsm.maxdepth_desc'] = 'The depth down the tree to grab Resources. If set to empty or 0, will grab all depths.';
+$_lang['prop_gsm.excluderesources_desc'] = 'An optional comma-separated list of Resources to skip.';
 $_lang['prop_gsm.hidedeleted_desc'] = 'If true, will show only nondeleted Resources.';
 $_lang['prop_gsm.googleschema_desc'] = 'The location of the GoogleSiteMap schema.';
 $_lang['prop_gsm.published_desc'] = 'If true, will only show published resources.';
