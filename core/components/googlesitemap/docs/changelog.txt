@@ -1,5 +1,9 @@
 Changelog for GoogleSiteMap.
 
+GoogleSiteMap 1.2
+====================================
+- Updated schema to 0.90
+
 GoogleSiteMap 1.1
 ====================================
 - Added maxDepth, excludeResources properties

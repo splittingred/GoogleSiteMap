@@ -1,8 +1,8 @@
 --------------------
 Snippet: GoogleSiteMap
 --------------------
-Version: 1.0
-Since: June 23, 2009-2010
+Version: 1.2
+Created: June 23, 2009
 Author: Shaun McCormick <shaun@modx.com>
 
 - Based on Michal Till's MODx Evolution GoogleSiteMap_XML snippet

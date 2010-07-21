@@ -35,7 +35,7 @@ class GoogleSiteMap {
         $this->config = array_merge(array(
             'allowedtemplates' => '',
             'context' => '',
-            'googleSchema' => 'http://www.google.com/schemas/sitemap/0.84',
+            'googleSchema' => 'http://www.google.com/schemas/sitemap/0.90',
             'hideDeleted' => true,
             'published' => true,
             'searchable' => true,

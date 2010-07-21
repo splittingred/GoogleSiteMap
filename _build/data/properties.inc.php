@@ -58,7 +58,7 @@ $properties = array(
         'desc' => 'prop_gsm.googleschema_desc',
         'type' => 'textfield',
         'options' => '',
-        'value' => 'http://www.google.com/schemas/sitemap/0.84',
+        'value' => 'http://www.google.com/schemas/sitemap/0.90',
     ),
     array(
         'name' => 'published',
