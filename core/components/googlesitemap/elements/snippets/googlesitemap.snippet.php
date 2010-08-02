@@ -30,7 +30,7 @@ require_once $modx->getOption('googlesitemap.core_path',null,$modx->getOption('c
 $GoogleSiteMap = new GoogleSiteMap($modx,$scriptProperties);
 
 /* setup default properties */
-$googleSchema = $modx->getOption('googleSchema',$scriptProperties,'http://www.google.com/schemas/sitemap/0.90');
+$googleSchema = $modx->getOption('googleSchema',$scriptProperties,'http://www.google.com/schemas/sitemap/0.9');
 $containerTpl = $modx->getOption('containerTpl',$scriptProperties,'gContainer');
 
 /* get container tpl and content */
