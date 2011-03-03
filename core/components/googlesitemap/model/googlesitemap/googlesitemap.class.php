@@ -92,10 +92,6 @@ class GoogleSiteMap {
             ));
         }
 
-        /* common flags */
-        if ($this->config['published']) { $c->where(array('published' => true)); }
-        if ($this->config['hideDeleted']) { $c->where(array('deleted' => false)); }
-
         /* if restricting to templates */
         if (!empty($this->config['allowedtemplates'])) {
             $tpls = $this->prepareForIn($this->config['allowedtemplates']);
@@ -117,7 +113,18 @@ class GoogleSiteMap {
             $id = $child->get('id');
             if ($selfId == $id) continue;
 
-            if ($this->config['searchable'] && $child->get('searchable') == true) {
+            $canParse = true;
+            if ($this->config['searchable']) {
+                $canParse = $canParse && $child->get('searchable');
+            }
+            if ($this->config['published']) {
+                $canParse = $canParse && $child->get('published');
+            }
+            if ($this->config['hideDeleted']) {
+                $canParse = $canParse && !$child->get('deleted');
+            }
+
+            if ($canParse) {
                 $url = $this->modx->makeUrl($id,'','','full');
 
                 $date = $child->get('editedon') ? $child->get('editedon') : $child->get('createdon');

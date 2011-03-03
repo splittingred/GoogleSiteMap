@@ -2,13 +2,14 @@ Changelog for GoogleSiteMap.
 
 GoogleSiteMap 1.2.1
 ====================================
-- [#5] Fixed issue where children of non-searchable resources were not showing
+- [#4] Fix issue where children of non-published resources were not showing
+- [#5] Fix issue where children of non-searchable resources were not showing
 
 GoogleSiteMap 1.2
 ====================================
-- Fixed reference URL for schema
-- Fixed reference to 0.9
-- Updated schema to 0.90
+- Fix reference URL for schema
+- Fix reference to 0.9
+- Update schema to 0.90
 
 GoogleSiteMap 1.1
 ====================================
