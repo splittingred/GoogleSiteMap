@@ -123,5 +123,12 @@ $properties = array(
         'options' => '',
         'value' => 'gContainer',
     ),
+    array(
+        'name' => 'startId',
+        'desc' => 'prop_gsm.startid_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => '0',
+    ),
 );
 return $properties;

@@ -2,6 +2,7 @@ Changelog for GoogleSiteMap.
 
 GoogleSiteMap 1.2.1
 ====================================
+- [#1] Add ability to make sitemap from a specific Resource via startId property
 - [#4] Fix issue where children of non-published resources were not showing
 - [#5] Fix issue where children of non-searchable resources were not showing
 

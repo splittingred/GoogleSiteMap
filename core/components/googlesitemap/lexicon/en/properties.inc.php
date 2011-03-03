@@ -39,6 +39,7 @@ $_lang['prop_gsm.searchable_desc'] = 'If true, will only show searchable resourc
 $_lang['prop_gsm.sortby_desc'] = 'The field to sort the results by.';
 $_lang['prop_gsm.sortbyalias_desc'] = 'The class to use as the alias for the sortBy property.';
 $_lang['prop_gsm.sortdir_desc'] = 'The direction to sort in.';
+$_lang['prop_gsm.startid_desc'] = 'Optional. The ID of a Resource to start the sitemap from. 0 will do the entire site.';
 $_lang['prop_gsm.templatefilter_desc'] = 'The modTemplate column to filter by.';
 $_lang['prop_gsm.itemtpl_desc'] = 'The Chunk to use for each result item.';
 $_lang['prop_gsm.containertpl_desc'] = 'The Chunk to use for the output container.';

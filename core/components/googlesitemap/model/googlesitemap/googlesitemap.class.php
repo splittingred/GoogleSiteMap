@@ -60,7 +60,7 @@ class GoogleSiteMap {
      * @param integer $selfId If specified, will exclude this ID
      * @return string The generated XML
      */
-    public function run($currentParent = 0,$selfId = -1,$depth = 0) {
+    public function run($currentParent,$selfId = -1,$depth = 0) {
         if (!empty($this->config['maxDepth']) && $depth >= $this->config['maxDepth']) return '';
         $output = '';
 

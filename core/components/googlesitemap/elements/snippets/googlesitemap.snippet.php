@@ -32,9 +32,10 @@ $GoogleSiteMap = new GoogleSiteMap($modx,$scriptProperties);
 /* setup default properties */
 $googleSchema = $modx->getOption('googleSchema',$scriptProperties,'http://www.sitemaps.org/schemas/sitemap/0.9');
 $containerTpl = $modx->getOption('containerTpl',$scriptProperties,'gContainer');
+$startId = (int)$modx->getOption('startId',$scriptProperties,0);
 
 /* get container tpl and content */
 return $GoogleSiteMap->getChunk($containerTpl,array(
     'schema' => $googleSchema,
-    'items' => $GoogleSiteMap->run(),
+    'items' => $GoogleSiteMap->run($startId),
 ));
