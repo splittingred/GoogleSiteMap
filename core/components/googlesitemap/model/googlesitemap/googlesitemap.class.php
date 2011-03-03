@@ -67,10 +67,10 @@ class GoogleSiteMap {
         /* build query */
         $c = $this->modx->newQuery('modResource');
         $c->leftJoin('modResource','Children');
-        $c->select('
-            `modResource`.*,
-            COUNT(`Children`.`id`) AS `children`
-        ');
+        $c->select(array(
+            '`modResource`.*',
+            'COUNT(`Children`.`id`) AS `children`',
+        ));
         $c->where(array(
             'parent' => $currentParent,
         ));
@@ -78,7 +78,9 @@ class GoogleSiteMap {
         /* if restricting to contexts */
         if (!empty($this->config['context'])) {
             $ctxs = $this->prepareForIn($this->config['context']);
-            $c->where('`modResource`.`context_key` IN ('.$ctxs.')');
+            $c->where(array(
+                'modResource.context_key:IN' => $ctxs,
+            ));
         } else {
             $c->where(array('modResource.context_key' => $this->modx->context->get('key')));
         }
@@ -86,21 +88,20 @@ class GoogleSiteMap {
         if (!empty($this->config['excludeResources'])) {
             $ex = $this->prepareForIn($this->config['excludeResources']);
             $c->where(array(
-                '`modResource`.`id` NOT IN ('.$ex.')',
+                'modResource.id:NOT IN' => $ex,
             ));
         }
 
         /* common flags */
         if ($this->config['published']) { $c->where(array('published' => true)); }
         if ($this->config['hideDeleted']) { $c->where(array('deleted' => false)); }
-        if ($this->config['searchable']) { $c->where(array('searchable' => true)); }
 
         /* if restricting to templates */
         if (!empty($this->config['allowedtemplates'])) {
             $tpls = $this->prepareForIn($this->config['allowedtemplates']);
             $c->innerJoin('modTemplate','Template');
             $c->where(array(
-                'Template.'.$this->config['templateFilter'].' IN ('.$tpls.')',
+                'Template.'.$this->config['templateFilter'].':IN' => $tpls,
             ));
         }
 
@@ -116,34 +117,36 @@ class GoogleSiteMap {
             $id = $child->get('id');
             if ($selfId == $id) continue;
 
-            $url = $this->modx->makeUrl($id,'','','full');
+            if ($this->config['searchable'] && $child->get('searchable') == true) {
+                $url = $this->modx->makeUrl($id,'','','full');
 
-            $date = $child->get('editedon') ? $child->get('editedon') : $child->get('createdon');
-            $date = date("Y-m-d", strtotime($date));
-            
-            /* Get the date difference */
-            $datediff = datediff("d", $date, date("Y-m-d"));
-            if ($datediff <=1) {
-                $priority = '1.0';
-                $update = 'daily';
-            } elseif (($datediff >1) && ($datediff<=7)) {
-                $priority = '0.75';
-                $update = 'weekly';
-            } elseif (($datediff >7) && ($datediff<=30)) {
-                $priority = '0.50';
-                $update = 'weekly';
-            } else {
-                $priority = '0.25';
-                $update = 'monthly';
+                $date = $child->get('editedon') ? $child->get('editedon') : $child->get('createdon');
+                $date = date("Y-m-d", strtotime($date));
+
+                /* Get the date difference */
+                $datediff = datediff("d", $date, date("Y-m-d"));
+                if ($datediff <=1) {
+                    $priority = '1.0';
+                    $update = 'daily';
+                } elseif (($datediff >1) && ($datediff<=7)) {
+                    $priority = '0.75';
+                    $update = 'weekly';
+                } elseif (($datediff >7) && ($datediff<=30)) {
+                    $priority = '0.50';
+                    $update = 'weekly';
+                } else {
+                    $priority = '0.25';
+                    $update = 'monthly';
+                }
+
+                /* add item to output */
+                $output .= $this->getChunk($this->config['itemTpl'],array(
+                    'url' => $url,
+                    'date' => $date,
+                    'update' => $update,
+                    'priority' => $priority,
+                )).$this->config['itemSeparator'];
             }
-
-            /* add item to output */
-            $output .= $this->getChunk($this->config['itemTpl'],array(
-                'url' => $url,
-                'date' => $date,
-                'update' => $update,
-                'priority' => $priority,
-            )).$this->config['itemSeparator'];
 
             /* if children, recurse */
             if ($child->get('children') > 0) {
@@ -161,9 +164,9 @@ class GoogleSiteMap {
         $cslArray = array_unique($cslArray);
         $results = array();
         foreach ($cslArray as $item) {
-            $results[] = '"'.$item.'"';
+            $results[] = $item;
         }
-        return implode($delimiter,$results);
+        return $results;
     }
 
 

@@ -35,7 +35,7 @@ set_time_limit(0);
 
 define('PKG_NAME','GoogleSiteMap');
 define('PKG_NAME_LOWER',strtolower(PKG_NAME));
-define('PKG_VERSION','1.2');
+define('PKG_VERSION','1.2.1');
 define('PKG_RELEASE','pl');
 
 $root = dirname(dirname(__FILE__)).'/';
