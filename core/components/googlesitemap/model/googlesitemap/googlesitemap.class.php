@@ -67,9 +67,9 @@ class GoogleSiteMap {
         /* build query */
         $c = $this->modx->newQuery('modResource');
         $c->leftJoin('modResource','Children');
+        $c->select($this->modx->getSelectColumns('modResource','modResource'));
         $c->select(array(
-            '`modResource`.*',
-            'COUNT(`Children`.`id`) AS `children`',
+            'COUNT(Children.id) AS children',
         ));
         $c->where(array(
             'parent' => $currentParent,
