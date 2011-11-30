@@ -56,6 +56,9 @@ class GoogleSiteMap {
             'chunksPath' => $corePath.'elements/chunks/',
             'maxDepth' => 0,
             'excludeResources' => '',
+            'where' => '',
+            'excludeChildrenOf' => '',
+            'showHidden' => false,
         ),$config);
     }
 
@@ -207,7 +210,7 @@ class GoogleSiteMap {
      * @return array
      */
     protected function prepareForIn($str,$delimiter = ',') {
-        $cslArray = explode($delimiter,$str);
+        $cslArray = is_array($str) ? $str : explode($delimiter,$str);
         $cslArray = array_unique($cslArray);
         $results = array();
         foreach ($cslArray as $item) {
