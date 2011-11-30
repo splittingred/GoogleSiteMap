@@ -184,6 +184,12 @@ class GoogleSiteMap {
             ));
         }
 
+        /* where filtering */
+        if (!empty($this->config['where'])) {
+            $where = is_array($this->config['where']) ? $this->config['where'] : $this->modx->fromJSON($this->config['where']);
+            $c->where($where);
+        }
+
         /* sorting/grouping */
         $c->sortby($this->config['sortBy'],$this->config['sortDir']);
         $c->groupby('modResource.id');

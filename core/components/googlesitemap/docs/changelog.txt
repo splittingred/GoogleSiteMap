@@ -2,6 +2,7 @@ Changelog for GoogleSiteMap.
 
 GoogleSiteMap 1.3.0
 ====================================
+- Add &where for JSON-based where filtering
 - [#13] Add &excludeChildrenOf, which can take a comma-separated list of parents to exclude all children of
 
 GoogleSiteMap 1.2.1
