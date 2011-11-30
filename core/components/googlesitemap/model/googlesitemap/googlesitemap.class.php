@@ -25,8 +25,16 @@
  * @package googlesitemap
  */
 class GoogleSiteMap {
+    /** @var modX $modx */
+    public $modx;
+    /** @var array $chunks */
+    public $chunks = array();
+
     /**
      * Creates an instance of the GoogleSiteMap class.
+     *
+     * @var modX $modx
+     * @var array $config
      */
     function __construct(modX &$modx,array $config = array()) {
         $this->modx =& $modx;
@@ -54,61 +62,21 @@ class GoogleSiteMap {
     /**
      * Run the Google SiteMap XML generation, recursively
      *
-     * @access private
-     * @param integer $currentParent The current parent resource the iteration
+     * @param int $currentParent The current parent resource the iteration
      * is on
-     * @param integer $selfId If specified, will exclude this ID
+     * @param int $selfId If specified, will exclude this ID
+     * @param int $depth
      * @return string The generated XML
      */
     public function run($currentParent,$selfId = -1,$depth = 0) {
         if (!empty($this->config['maxDepth']) && $depth >= $this->config['maxDepth']) return '';
         $output = '';
 
-        /* build query */
-        $c = $this->modx->newQuery('modResource');
-        $c->leftJoin('modResource','Children');
-        $c->select($this->modx->getSelectColumns('modResource','modResource'));
-        $c->select(array(
-            'COUNT(Children.id) AS children',
-        ));
-        $c->where(array(
-            'parent' => $currentParent,
-        ));
-
-        /* if restricting to contexts */
-        if (!empty($this->config['context'])) {
-            $ctxs = $this->prepareForIn($this->config['context']);
-            $c->where(array(
-                'modResource.context_key:IN' => $ctxs,
-            ));
-        } else {
-            $c->where(array('modResource.context_key' => $this->modx->context->get('key')));
-        }
-
-        if (!empty($this->config['excludeResources'])) {
-            $ex = $this->prepareForIn($this->config['excludeResources']);
-            $c->where(array(
-                'modResource.id:NOT IN' => $ex,
-            ));
-        }
-
-        /* if restricting to templates */
-        if (!empty($this->config['allowedtemplates'])) {
-            $tpls = $this->prepareForIn($this->config['allowedtemplates']);
-            $c->innerJoin('modTemplate','Template');
-            $c->where(array(
-                'Template.'.$this->config['templateFilter'].':IN' => $tpls,
-            ));
-        }
-
-        /* sorting/grouping */
-        $c->sortby($this->config['sortBy'],$this->config['sortDir']);
-        $c->groupby('modResource.id');
-
         /* get children */
+        $c = $this->getQuery($currentParent);
         $children = $this->modx->getCollection('modResource',$c);
 
-        /* iterate */
+        /** @var modResource $child */
         foreach ($children as $child) {
             $id = $child->get('id');
             if ($selfId == $id) continue;
@@ -163,8 +131,71 @@ class GoogleSiteMap {
         return $output;
     }
 
+    public function getQuery($currentParent) {
+        /* build query */
+        $c = $this->modx->newQuery('modResource');
+        $c->leftJoin('modResource','Children');
+        $c->select($this->modx->getSelectColumns('modResource','modResource'));
+        $c->select(array(
+            'COUNT(Children.id) AS children',
+        ));
+        $c->where(array(
+            'parent' => $currentParent,
+        ));
+
+        /* if restricting to contexts */
+        if (!empty($this->config['context'])) {
+            $ctxs = $this->prepareForIn($this->config['context']);
+            $c->where(array(
+                'modResource.context_key:IN' => $ctxs,
+            ));
+        } else {
+            $c->where(array('modResource.context_key' => $this->modx->context->get('key')));
+        }
+
+        /* if excluding resources */
+        if (!empty($this->config['excludeResources'])) {
+            $ex = $this->prepareForIn($this->config['excludeResources']);
+            $c->where(array(
+                'modResource.id:NOT IN' => $ex,
+            ));
+        }
+
+        /* if excluding all children of certain resources */
+        if (!empty($this->config['excludeChildrenOf'])) {
+            $excludingParents = is_array($this->config['excludeChildrenOf']) ? $this->config['excludeChildrenOf'] : explode(',',$this->config['excludeChildrenOf']);
+            $excludedChildren = array();
+            foreach ($excludingParents as $excludingParent) {
+                $childrenIds = $this->modx->getChildIds($excludingParent,10);
+                $excludedChildren = array_merge($excludedChildren,$childrenIds);
+            }
+            $excludedChildren = array_unique($excludedChildren);
+            $c->where(array(
+                'modResource.id:NOT IN' => $excludedChildren,
+            ));
+        }
+
+        /* if restricting to templates */
+        if (!empty($this->config['allowedtemplates'])) {
+            $tpls = $this->prepareForIn($this->config['allowedtemplates']);
+            $c->innerJoin('modTemplate','Template');
+            $c->where(array(
+                'Template.'.$this->config['templateFilter'].':IN' => $tpls,
+            ));
+        }
+
+        /* sorting/grouping */
+        $c->sortby($this->config['sortBy'],$this->config['sortDir']);
+        $c->groupby('modResource.id');
+
+        return $c;
+    }
+
     /**
      * Prepares a comma-separated list for an IN statement
+     * @param string $str
+     * @param string $delimiter
+     * @return array
      */
     protected function prepareForIn($str,$delimiter = ',') {
         $cslArray = explode($delimiter,$str);
@@ -209,14 +240,16 @@ class GoogleSiteMap {
      *
      * @access private
      * @param string $name The name of the Chunk. Will parse to name.chunk.tpl
+     * @param string $postFix
      * @return modChunk/boolean Returns the modChunk object if found, otherwise
      * false.
      */
-    private function _getTplChunk($name) {
+    private function _getTplChunk($name,$postFix = '.chunk.tpl') {
         $chunk = false;
-        $f = $this->config['chunksPath'].strtolower($name).'.chunk.tpl';
+        $f = $this->config['chunksPath'].strtolower($name).$postFix;
         if (file_exists($f)) {
             $o = file_get_contents($f);
+            /** @var modChunk $chunk */
             $chunk = $this->modx->newObject('modChunk');
             $chunk->set('name',$name);
             $chunk->setContent($o);
@@ -247,8 +280,8 @@ if (!function_exists('datediff')) {
         s   - Number of full seconds (default)
      * @param $datefrom
      * @param $dateto
-     * @param $using_timestamps
-     * @return
+     * @param bool $using_timestamps
+     * @return float|int|string
      * @package googlesitemap
      */
     function datediff($interval, $datefrom, $dateto, $using_timestamps = false) {
