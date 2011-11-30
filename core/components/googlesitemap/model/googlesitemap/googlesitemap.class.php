@@ -91,6 +91,9 @@ class GoogleSiteMap {
             if ($this->config['hideDeleted']) {
                 $canParse = $canParse && !$child->get('deleted');
             }
+            if (empty($this->config['showHidden'])) {
+                $canParse = $canParse && !$child->get('hidemenu');
+            }
 
             if ($canParse) {
                 $url = $this->modx->makeUrl($id,'','','full');

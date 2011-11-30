@@ -54,6 +54,13 @@ $properties = array(
         'value' => true,
     ),
     array(
+        'name' => 'showHidden',
+        'desc' => 'prop_gsm.showhidden_desc',
+        'type' => 'combo-boolean',
+        'options' => '',
+        'value' => false,
+    ),
+    array(
         'name' => 'googleSchema',
         'desc' => 'prop_gsm.googleschema_desc',
         'type' => 'textfield',
@@ -77,6 +84,13 @@ $properties = array(
     array(
         'name' => 'excludeResources',
         'desc' => 'prop_gsm.excluderesources_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => '',
+    ),
+    array(
+        'name' => 'excludeChildrenOf',
+        'desc' => 'prop_gsm.excludechildrenof_desc',
         'type' => 'textfield',
         'options' => '',
         'value' => '',
@@ -129,6 +143,13 @@ $properties = array(
         'type' => 'textfield',
         'options' => '',
         'value' => '0',
+    ),
+    array(
+        'name' => 'where',
+        'desc' => 'prop_gsm.where_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => '',
     ),
 );
 return $properties;
