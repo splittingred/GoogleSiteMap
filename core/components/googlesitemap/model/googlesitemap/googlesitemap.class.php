@@ -59,6 +59,7 @@ class GoogleSiteMap {
             'where' => '',
             'excludeChildrenOf' => '',
             'showHidden' => false,
+            'priorityTV' => 0,
         ),$config);
     }
 
@@ -119,7 +120,12 @@ class GoogleSiteMap {
                     $priority = '0.25';
                     $update = 'monthly';
                 }
-
+                if($this->config['priorityTV'] != 0){
+                    $priorityTV = $child->getTVValue($this->config['priorityTV']);
+                    if(!empty($priorityTV)){
+                        $priority = $priorityTV;
+                    }
+                }
                 /* add item to output */
                 $output .= $this->getChunk($this->config['itemTpl'],array(
                     'url' => $url,
