@@ -46,3 +46,4 @@ $_lang['prop_gsm.templatefilter_desc'] = 'The modTemplate column to filter by.';
 $_lang['prop_gsm.itemtpl_desc'] = 'The Chunk to use for each result item.';
 $_lang['prop_gsm.containertpl_desc'] = 'The Chunk to use for the output container.';
 $_lang['prop_gsm.where_desc'] = 'Optional. A JSON object of parameters to pass into the where statement.';
+$_lang['prop_gsm.prioritytv_desc'] = 'Optional. The name or ID of a TV to use to override the priority for a page.';

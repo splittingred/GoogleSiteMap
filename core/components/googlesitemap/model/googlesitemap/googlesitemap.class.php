@@ -120,9 +120,9 @@ class GoogleSiteMap {
                     $priority = '0.25';
                     $update = 'monthly';
                 }
-                if($this->config['priorityTV'] != 0){
+                if (!empty($this->config['priorityTV'])) {
                     $priorityTV = $child->getTVValue($this->config['priorityTV']);
-                    if(!empty($priorityTV)){
+                    if (!empty($priorityTV)) {
                         $priority = $priorityTV;
                     }
                 }

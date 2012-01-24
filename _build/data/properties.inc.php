@@ -151,5 +151,12 @@ $properties = array(
         'options' => '',
         'value' => '',
     ),
+    array(
+        'name' => 'priorityTV',
+        'desc' => 'prop_gsm.prioritytv_desc',
+        'type' => 'textfield',
+        'options' => '',
+        'value' => '',
+    ),
 );
 return $properties;
