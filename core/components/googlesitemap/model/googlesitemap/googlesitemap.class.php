@@ -96,7 +96,7 @@ class GoogleSiteMap {
                 $canParse = $canParse && !$child->get('deleted');
             }
             if (empty($this->config['showHidden'])) {
-                $canParse = $canParse && !$child->get('hidemenu');
+                $canParse = $canParse && (!$child->get('hidemenu') || $child->get('class_key') == 'Article');
             }
 
             if ($canParse) {
